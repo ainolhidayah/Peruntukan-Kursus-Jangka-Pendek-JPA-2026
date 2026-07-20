@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papan Pemuka Prestasi Perbelanjaan PPK & JPA 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Menyembunyikan butang spin lalai pada input nombor */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* */
+        @media print {
+            /* Tetapan Saiz Kertas & Orientasi */
+            @page {
+                size: landscape;
+                margin: 10mm 8mm 10mm 8mm;
+            }
+
+            /* Sembunyikan elemen interaktif yang tidak diperlukan pada cetakan */
+            .no-print, 
+            button, 
+            #search-input, 
+            .col-actions, 
+            #course-modal, 
+            #delete-modal, 
+            #notification-toast,
+            .print-hint {
+                display: none !important;
+            }
+
+            /* Struktur Halaman untuk Cetakan */
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                font-size: 10pt !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            main {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            /* Batalkan Scrollbar untuk mendedahkan semua data */
+            .overflow-x-auto {
+                overflow: visible !important;
+                overflow-x: visible !important;
+                max-width: 100% !important;
+            }
+
+            /* Struktur Jadual Cetakan */
+            table {
+                width: 100% !important;
+                table-layout: auto !important;
+                border-collapse: collapse !important;
+                font-size: 8.5pt !important; /* Saiz fon kecil sedikit supaya muat semua lajur */
+            }
+
+            th, td {
+                border: 1px solid #cbd5e1 !important; /* Border kelabu yang jelas pada kertas */
+                padding: 6px 8px !important;
+                color: #000000 !important;
+            }
+
+            th {
+                background-color: #f1f5f9 !important;
+                font-weight: bold !important;
+            }
+
+            /* Halang baris jadual terputus antara muka surat */
+            tr {
+                page-break-inside: avoid !important;
+            }
+
+            /* Tukarkan Input kepada teks biasa pada cetakan */
+            input[type="number"] {
+                border: none !important;
+                background: transparent !important;
+                text-align: right !important;
+                width: auto !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            select {
+                appearance: none !important;
+                -webkit-appearance: none !important;
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                font-weight: bold !important;
+            }
+
+            /* Pembahagian Grid Tandatangan Kekal 2 Lajur */
+            .print-grid-signatures {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 20px !important;
+                page-break-inside: avoid !important;
+            }
+
+            /* Pembahagian Grid Metrik Kad Kewangan */
+            .print-grid-metrics {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr 1fr !important;
+                gap: 15px !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 text-white shadow-lg border-b border-indigo-500/20">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <!-- RUANGAN LOGO: IAB GitHub Logo Placeholder -->
+                    <!-- Anda boleh gantikan struktur div di bawah dengan: <img src="logo_iab.png" alt="Logo IAB" class="h-12 w-auto object-contain"> -->
+                    <div class="p-2.5 bg-white/10 rounded-lg backdrop-blur-sm border border-white/10 flex items-center justify-center">
+                        <i class="fa-solid fa-file-invoice-dollar text-2xl text-amber-400 animate-pulse"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-semibold tracking-widest text-indigo-200 uppercase">Kementerian Pendidikan • Institut Aminuddin Baki</p>
+                        <h1 class="text-xl md:text-2xl font-bold tracking-tight">Waran Peruntukan Kursus Jangka Pendek JPA 2026</h1>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 no-print">
+                    <button onclick="window.print()" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition flex items-center gap-2 border border-white/10">
+                        <i class="fa-solid fa-print"></i> Cetak Dokumen
+                    </button>
+                    <button onclick="exportData()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-file-export"></i> Eksport CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+
+        <!-- Warrant Details Panel -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8 overflow-hidden relative">
+            <div class="absolute top-0 right-0 h-24 w-24 bg-indigo-50 rounded-full -mr-8 -mt-8 -z-10 opacity-50"></div>
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full uppercase border border-indigo-100">
+                            No. Waran: 91000252
+                        </span>
+                        <span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-full uppercase border border-amber-100">
+                            Kod Projek: P07005000050029
+                        </span>
+                        <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full uppercase border border-emerald-100">
+                            Siling Waran: RM 313,828.00
+                        </span>
+                        <span class="text-xs text-slate-400 font-medium">
+                            Ruj: Waran 2026 - Kursus Jangka Pendek JPA.pdf
+                        </span>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900">Perincian Waran Peruntukan (Kew. 308E-Pin. 1/2016)</h2>
+                    <p class="text-xs text-slate-500 leading-relaxed max-w-3xl">
+                        Disalurkan daripada <span class="font-semibold text-slate-700">Jabatan Perkhidmatan Awam (JPA)</span> bagi kegunaan <span class="font-semibold text-slate-700">Institut Aminuddin Baki (IAB)</span> di bawah program latihan pembangunan kompetensi pegawai kementerian tahun kewangan 2026[cite: 2].
+                    </p>
+                </div>
+                
+                <!-- Date Tracking Info Box -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 grid grid-cols-2 gap-4 text-xs shrink-0 lg:w-96">
+                    <div>
+                        <p class="text-slate-400 font-bold uppercase tracking-wider text-[9px]">Tarikh Terima Waran:</p>
+                        <p class="font-bold text-slate-700 text-sm mt-1">22.04.2026</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Tarikh Dokumen Rasmi</p>
+                    </div>
+                    <div class="border-l border-slate-200 pl-4">
+                        <p class="text-slate-400 font-bold uppercase tracking-wider text-[9px]">Tarikh Kemaskini Data:</p>
+                        <p id="last-updated-date" class="font-bold text-indigo-700 text-sm mt-1">20.07.2026 10:09:20</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Kemaskini Automatik Sistem</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hint block for printer optimization (Web only) -->
+        <div class="print-hint mb-6 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 flex items-center gap-2 no-print">
+            <i class="fa-solid fa-circle-info text-base text-amber-600"></i>
+            <span><strong>Tip Cetakan Rasmi:</strong> Sila gunakan orientasi kertas <strong>Landscape (Melintang)</strong> semasa mencetak untuk paparan jadual penuh yang kemas dan profesional tanpa sebarang data terpotong.</span>
+        </div>
+        
+        <!-- Financial Metrics Cards (Now reduced to 3 cards for cleaner look) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 print-grid-metrics">
+            <!-- Total Perbelanjaan Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jumlah Dipertanggung</p>
+                    <p class="text-2xl font-bold text-slate-800 mt-1"><span class="text-sm font-semibold text-slate-500">RM</span> <span id="total-belanja">0.00</span></p>
+                </div>
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg border border-blue-100">
+                    <i class="fa-solid fa-receipt text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Baki Peruntukan Card (Dynamic Blink on Warning) -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Baki Peruntukan Waran</p>
+                    <p class="text-2xl font-bold mt-1" id="baki-belanja-container">
+                        <span class="text-sm font-semibold text-slate-500">RM</span> <span id="baki-belanja">0.00</span>
+                    </p>
+                </div>
+                <div id="baki-icon-container" class="p-3 rounded-lg border transition-all duration-300">
+                    <i class="fa-solid fa-wallet text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Kadar Penggunaan Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                <div class="flex justify-between items-center mb-2">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kadar Prestasi Utiliti</p>
+                    <span id="utilization-rate" class="text-sm font-bold text-slate-700">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-3">
+                    <div id="utilization-bar" class="bg-indigo-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 no-print">
+            <div class="flex items-center gap-2 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                <button onclick="filterCategory('all')" id="btn-all" class="px-4 py-1.5 rounded-md text-sm font-medium transition bg-slate-900 text-white">Semua Rekod</button>
+                <button onclick="filterCategory('Bukan Guru')" id="btn-bukan-guru" class="px-4 py-1.5 rounded-md text-sm font-medium transition text-slate-600 hover:text-slate-900">Bukan Guru</button>
+                <button onclick="filterCategory('Guru')" id="btn-guru" class="px-4 py-1.5 rounded-md text-sm font-medium transition text-slate-600 hover:text-slate-900">Guru</button>
+            </div>
+            
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <div class="relative flex-grow sm:flex-grow-0">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </span>
+                    <input type="text" id="search-input" oninput="handleSearch()" placeholder="Cari nama, objektif, lokasi..." class="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-64 shadow-sm bg-white">
+                </div>
+                <button onclick="openAddModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium shadow-sm transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-plus"></i> Tambah Kursus
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Interactive Table Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+            <div class="p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-indigo-950 text-lg"></i>
+                    <div>
+                        <h2 class="font-bold text-slate-900">Senarai Kursus & Perbelanjaan Peruntukan Waran</h2>
+                        <p class="text-xs text-slate-500">Agihan siling waran merangkumi OS21 dan OS29</p>
+                    </div>
+                </div>
+                <span class="text-[11px] bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full font-semibold border border-indigo-100 self-start sm:self-auto flex items-center gap-1.5 no-print">
+                    <i class="fa-solid fa-pen text-[10px]"></i> Klik nilai RM atau Tukar Status terus di bawah
+                </span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse table-auto">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-[11px] font-bold tracking-wider uppercase">
+                            <th class="py-3 px-4 w-12 text-center">Bil</th>
+                            <th class="py-3 px-3 w-28">Kategori</th>
+                            <th class="py-3 px-4 min-w-[180px]">Nama Kursus</th>
+                            
+                            <!-- Dynamic Objective / Outcome Headers -->
+                            <th class="py-3 px-4 min-w-[180px] col-obj-out hidden">Objektif</th>
+                            <th class="py-3 px-4 min-w-[180px] col-obj-out hidden">Outcome</th>
+                            
+                            <th class="py-3 px-3 text-center w-16">Pax</th>
+                            <th class="py-3 px-4 min-w-[160px]">Tarikh & Lokasi</th>
+                            <th class="py-3 px-4 text-right min-w-[110px]">OS21 (RM)</th>
+                            <th class="py-3 px-4 text-right min-w-[110px]">OS29 (RM)</th>
+                            <th class="py-3 px-4 text-right min-w-[120px]">Jumlah (RM)</th>
+                            <th class="py-3 px-4 text-center w-36">Status Pelaksanaan</th>
+                            <th class="py-3 px-3 text-center w-24 no-print col-actions">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="course-table-body" class="divide-y divide-slate-100">
+                        <!-- Dynamic Rows Inserted Here -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-slate-50/70 border-t-2 border-slate-200 font-bold text-slate-800 text-xs sm:text-sm">
+                            <td id="subtotal-title" colspan="3" class="py-4 px-4 text-right">Jumlah Dipertanggung Subtotal:</td>
+                            <td id="grand-pax" class="py-4 px-3 text-center">0</td>
+                            <td></td>
+                            <td id="grand-os21" class="py-4 px-4 text-right text-indigo-900">RM 0.00</td>
+                            <td id="grand-os29" class="py-4 px-4 text-right text-sky-900">RM 0.00</td>
+                            <td id="grand-total" class="py-4 px-4 text-right text-indigo-950 bg-indigo-50/50">RM 0.00</td>
+                            <td></td>
+                            <td class="no-print col-actions"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Breakdown Charts & Visual Summaries -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 no-print">
+            <!-- OS Category Comparison -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-bar text-indigo-600"></i>
+                    Komposisi Objek Sebagai (OS) Mengikut Waran
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center text-xs mb-1">
+                            <span class="font-semibold text-slate-600">OS21 (Sewa & Perkhidmatan)</span>
+                            <span id="percent-os21" class="font-bold text-indigo-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full">
+                            <div id="bar-os21" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span class="text-xs text-slate-400 mt-1 block font-medium" id="val-os21">RM 0.00</span>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center text-xs mb-1">
+                            <span class="font-semibold text-slate-600">OS29 (Tuntutan, Latihan & Elaun)</span>
+                            <span id="percent-os29" class="font-bold text-sky-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full">
+                            <div id="bar-os29" class="bg-sky-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span class="text-xs text-slate-400 mt-1 block font-medium" id="val-os29">RM 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group (Category) Comparison -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h3 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-users-rectangle text-indigo-600"></i>
+                    Nisbah Agihan Perbelanjaan Mengikut Kumpulan
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center text-xs mb-1">
+                            <span class="font-semibold text-slate-600">Bukan Guru</span>
+                            <span id="percent-bukan-guru" class="font-bold text-amber-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full">
+                            <div id="bar-bukan-guru" class="bg-amber-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span class="text-xs text-slate-400 mt-1 block font-medium" id="val-bukan-guru">RM 0.00</span>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center text-xs mb-1">
+                            <span class="font-semibold text-slate-600">Guru</span>
+                            <span id="percent-guru" class="font-bold text-emerald-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full">
+                            <div id="bar-guru" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span class="text-xs text-slate-400 mt-1 block font-medium" id="val-guru">RM 0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Official Bottom Sign-Off Panel -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6 mb-8 page-break-avoid">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 pb-3 mb-6">Kelulusan & Penyediaan Dokumen Rasmi</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-slate-700 print-grid-signatures">
+                <!-- Prepared By Block (Dwi-Lajur) -->
+                <div class="bg-slate-50/50 rounded-lg p-5 border border-slate-100 space-y-5">
+                    <div class="flex items-center gap-2 text-indigo-950 font-bold">
+                        <i class="fa-solid fa-file-signature text-lg text-indigo-600"></i>
+                        <span>Disediakan Oleh</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <p class="font-bold text-slate-900 text-sm">Puan Ainol Hidayah binti Abdul Rauof</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Pegawai Latihan IAB /<br>Pensyarah Kanan,<br>Jabatan Pembangunan Staf</p>
+                        </div>
+                        <div class="sm:border-l sm:border-slate-200 sm:pl-6">
+                            <p class="font-bold text-slate-900 text-sm">Puan Norazlina binti Mohd Radzi</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Penolong Pegawai Latihan IAB /<br>Pensyarah Kanan,<br>Jabatan Pembangunan Staf</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200/50 grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="w-32 h-8 border-b border-dashed border-slate-300"></div>
+                            <p class="text-[10px] text-slate-400 mt-1">Tandatangan & Tarikh (Penyedia 1)</p>
+                        </div>
+                        <div>
+                            <div class="w-32 h-8 border-b border-dashed border-slate-300"></div>
+                            <p class="text-[10px] text-slate-400 mt-1">Tandatangan & Tarikh (Penyedia 2)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviewed By Block -->
+                <div class="bg-slate-50/50 rounded-lg p-5 border border-slate-100 space-y-5">
+                    <div class="flex items-center gap-2 text-indigo-950 font-bold">
+                        <i class="fa-solid fa-user-check text-lg text-indigo-600"></i>
+                        <span>Disemak Oleh</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <p class="font-bold text-slate-900 text-sm">Encik Mohamed Khaidir bin Alias</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Ketua Jabatan,<br>Jabatan Pembangunan Staf</p>
+                        </div>
+                        <div class="sm:border-l sm:border-slate-200 sm:pl-6">
+                            <p class="font-bold text-slate-900 text-sm">Puan Rashidah binti Mohd Said</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Ketua Pusat,<br>Pusat Pengurusan Dasar dan Inovasi</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200/50 grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="w-32 h-8 border-b border-dashed border-slate-300"></div>
+                            <p class="text-[10px] text-slate-400 mt-1">Tandatangan & Tarikh (Semakan 1)</p>
+                        </div>
+                        <div>
+                            <div class="w-32 h-8 border-b border-dashed border-slate-300"></div>
+                            <p class="text-[10px] text-slate-400 mt-1">Tandatangan & Tarikh (Semakan 2)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Form for Adding/Editing Kursus -->
+    <div id="course-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
+        <div class="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-xl mx-4 overflow-hidden transform transition-all scale-100">
+            <div class="bg-slate-950 text-white px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-pen-nib text-amber-400"></i>
+                    <h3 id="modal-title" class="font-bold text-base">Tambah Maklumat Kursus</h3>
+                </div>
+                <button onclick="closeAddModal()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form id="course-form" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="form-course-id">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Kategori Kumpulan</label>
+                        <select id="form-kategori" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required>
+                            <option value="Bukan Guru">Bukan Guru</option>
+                            <option value="Guru">Guru</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Status Pelaksanaan</label>
+                        <select id="form-status" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required>
+                            <option value="Selesai">Selesai</option>
+                            <option value="Tunda">Tunda</option>
+                            <option value="Batal">Batal</option>
+                            <option value="Belum Dilaksanakan">Belum Dilaksanakan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nama Kursus</label>
+                    <input type="text" id="form-nama" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required placeholder="Contoh: Kursus Generative AI: Vibe Coding">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Objektif Kursus</label>
+                        <textarea id="form-objektif" rows="2" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required placeholder="Contoh: Memperkasakan kepemimpinan berpengaruh melalui penguasaan teknik inovasi..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Outcome Kursus</label>
+                        <textarea id="form-outcome" rows="2" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required placeholder="Contoh: Cadangan pelaksanaan kerangka Model Kepimpinan Adaptif di organisasi masing-masing..."></textarea>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Bilangan Peserta (Pax)</label>
+                        <input type="number" id="form-pax" min="1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Tarikh Kursus</label>
+                        <input type="text" id="form-tarikh" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required placeholder="Contoh: 27 - 29 Julai 2026">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Lokasi Kursus</label>
+                    <input type="text" id="form-lokasi" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" required placeholder="Contoh: IAB Cawangan Genting Highlands">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">OS21 (RM)</label>
+                        <input type="number" step="0.01" id="form-os21" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="0.00">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">OS29 (RM)</label>
+                        <input type="number" step="0.01" id="form-os29" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t border-slate-150">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 text-sm text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition">Batal</button>
+                    <button type="submit" class="px-4 py-2 text-sm text-white bg-indigo-700 hover:bg-indigo-600 rounded-lg transition shadow-md">Simpan Rekod</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
+        <div class="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-md mx-4 overflow-hidden transform transition-all">
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-rose-50 text-rose-600 mb-4 border border-rose-100">
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Hapus Rekod Kursus?</h3>
+                <p class="text-sm text-slate-500 mb-6">Tindakan ini akan memadamkan data perbelanjaan kursus ini secara kekal daripada pengiraan waran.</p>
+                <input type="hidden" id="delete-target-id">
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeDeleteModal()" class="px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Batal</button>
+                    <button onclick="confirmDelete()" class="px-4 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-500 rounded-lg transition shadow-md">Hapus Rekod</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 max-w-xs pointer-events-none no-print">
+        <span id="toast-icon-wrapper" class="text-amber-400"><i class="fa-solid fa-circle-info"></i></span>
+        <p id="toast-message" class="text-xs font-semibold"></p>
+    </div>
+
+    <!-- JavaScript Data and Interactivity logic -->
+    <script>
+        // Constant official warrant ceiling amount
+        const WARAN_CEILING = 313828.00;
+
+        // Initializing data set with 'status' property added
+        let courses = [
+            {
+                id: 1,
+                kategori: 'Bukan Guru',
+                nama: 'Kursus Generative AI : Vibe Coding',
+                objektif: 'Memperkasakan kemahiran pembangunan kod (coding) berasaskan AI Generatif bagi Pegawai IT.',
+                outcome: 'Pembangunan aplikasi prototaip pantas dan sistem automasi pengurusan di IAB.',
+                pax: 15,
+                tarikh: '27 - 29 Julai 2026',
+                lokasi: 'IAB Cawangan Genting Highlands',
+                os21: 25000.00,
+                os29: 18500.00,
+                status: 'Selesai'
+            },
+            {
+                id: 2,
+                kategori: 'Bukan Guru',
+                nama: 'Kursus AWS dan Linux',
+                objektif: 'Menguasai pentadbiran pelayan Linux dan pengurusan infrastruktur awan AWS.',
+                outcome: 'Peningkatan ketersediaan (uptime) sistem dan pengoptimuman kos pengehosan pelayan awan KPM.',
+                pax: 10,
+                tarikh: '26 - 27 Ogos 2026',
+                lokasi: 'Trainocate Kuala Lumpur',
+                os21: 15000.00,
+                os29: 8200.00,
+                status: 'Tunda'
+            },
+            {
+                id: 3,
+                kategori: 'Guru',
+                nama: '5-Day Executive Programme on Leadership, Innovation and AI Competency (Siri 1)',
+                objektif: 'Memperkasakan kepemimpinan berpengaruh melalui penguasaan teknik inovasi & kompetensi AI bagi pensyarah/pegawai.',
+                outcome: 'Cadangan pelaksanaan kerangka Model Kepimpinan Adaptif di institusi pendidikan masing-masing.',
+                pax: 23,
+                tarikh: '3 - 7 Ogos 2026',
+                lokasi: 'USM, Pulau Pinang',
+                os21: 85000.00,
+                os29: 64000.00,
+                status: 'Selesai'
+            },
+            {
+                id: 4,
+                kategori: 'Guru',
+                nama: '5-Day Executive Programme on Leadership, Innovation and AI Competency (Siri 2)',
+                objektif: 'Membangun keupayaan tadbir urus kepemimpinan dan integrasi alat AI dalam membuat keputusan strategik.',
+                outcome: 'Pembudayaan automasi digital and pembinaan pelan bertindak transformasi kepimpinan sekolah.',
+                pax: 23,
+                tarikh: '7 - 11 September 2026',
+                lokasi: 'USM, Pulau Pinang',
+                os21: 85000.00,
+                os29: 68000.00,
+                status: 'Selesai'
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // Formats numbers to RM Currency string
+        function formatRM(val) {
+            return new Intl.NumberFormat('ms-MY', { style: 'currency', currency: 'MYR' }).format(val);
+        }
+
+        // Live Date-Time Updater for 'last-updated-date'
+        function touchUpdatedDate() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const liveString = `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('last-updated-date').innerText = liveString;
+        }
+
+        // Custom Notification Toast trigger
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('notification-toast');
+            const iconWrapper = document.getElementById('toast-icon-wrapper');
+            const msgEl = document.getElementById('toast-message');
+            
+            msgEl.innerText = message;
+            if (type === 'error') {
+                iconWrapper.innerHTML = '<i class="fa-solid fa-circle-exclamation text-rose-400"></i>';
+            } else if (type === 'success') {
+                iconWrapper.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+            } else {
+                iconWrapper.innerHTML = '<i class="fa-solid fa-circle-info text-sky-400"></i>';
+            }
+
+            toast.classList.remove('translate-y-10', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-10', 'opacity-0');
+            }, 3500);
+        }
+
+        // Render Table Rows based on current states
+        function renderTable() {
+            const tbody = document.getElementById('course-table-body');
+            tbody.innerHTML = '';
+
+            // Dynamic header columns toggler (Objektif / Outcome only show on specific Guru/Bukan Guru tabs)
+            const objOutHeaders = document.querySelectorAll('.col-obj-out');
+            const grandTotalFooterText = document.getElementById('subtotal-title');
+
+            if (currentFilter === 'all') {
+                objOutHeaders.forEach(el => el.classList.add('hidden'));
+                grandTotalFooterText.colSpan = 3; // Bil, Kategori, Nama Kursus
+            } else {
+                objOutHeaders.forEach(el => el.classList.remove('hidden'));
+                grandTotalFooterText.colSpan = 5; // Bil, Kategori, Nama Kursus, Objektif, Outcome
+            }
+
+            let filtered = courses.filter(item => {
+                const matchCat = currentFilter === 'all' || item.kategori === currentFilter;
+                const matchSearch = item.nama.toLowerCase().includes(currentSearch.toLowerCase()) || 
+                                    item.lokasi.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                    item.objektif.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                    item.outcome.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                const totalSpan = currentFilter === 'all' ? 10 : 12;
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="${totalSpan}" class="py-12 text-center text-slate-400 text-sm">
+                            <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+                            Tiada rekod kursus ditemui.
+                        </td>
+                    </tr>
+                `;
+                updateFooterValues(0, 0, 0, 0);
+                return;
+            }
+
+            let subPax = 0, subOs21 = 0, subOs29 = 0, subTotal = 0;
+
+            filtered.forEach((item, index) => {
+                const totalItem = (Number(item.os21) || 0) + (Number(item.os29) || 0);
+                subPax += Number(item.pax) || 0;
+                subOs21 += Number(item.os21) || 0;
+                subOs29 += Number(item.os29) || 0;
+                subTotal += totalItem;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/70 transition-colors text-sm text-slate-700';
+                
+                // Building standard cells
+                let rowHTML = `
+                    <td class="py-3 px-4 text-center font-semibold text-slate-400">${index + 1}</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                            item.kategori === 'Guru' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
+                        }">
+                            ${item.kategori}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 font-semibold text-slate-900 leading-snug">${item.nama}</td>
+                `;
+
+                // Adding Objektif & Outcome only if currentFilter is not 'all'
+                if (currentFilter !== 'all') {
+                    rowHTML += `
+                        <td class="py-3 px-4 text-xs text-slate-500 leading-relaxed max-w-[200px]">${item.objektif}</td>
+                        <td class="py-3 px-4 text-xs text-slate-500 leading-relaxed max-w-[200px]">${item.outcome}</td>
+                    `;
+                }
+
+                // Append remaining cells including the Execution Status inline select dropdown
+                rowHTML += `
+                    <td class="py-3 px-3 text-center font-medium">${item.pax}</td>
+                    <td class="py-3 px-4 text-xs">
+                        <div class="font-medium text-slate-600">${item.tarikh}</div>
+                        <div class="text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot text-indigo-500"></i> ${item.lokasi}</div>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                            <span class="text-slate-400 text-xs font-medium no-print">RM</span>
+                            <input type="number" step="0.01" value="${item.os21}" onchange="updateCell(${item.id}, 'os21', this.value)" class="w-20 text-right bg-transparent border-b border-dashed border-slate-300 hover:border-slate-500 focus:border-indigo-500 focus:outline-none focus:bg-white px-1 py-0.5 rounded font-medium text-indigo-900">
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                            <span class="text-slate-400 text-xs font-medium no-print">RM</span>
+                            <input type="number" step="0.01" value="${item.os29}" onchange="updateCell(${item.id}, 'os29', this.value)" class="w-20 text-right bg-transparent border-b border-dashed border-slate-300 hover:border-slate-500 focus:border-indigo-500 focus:outline-none focus:bg-white px-1 py-0.5 rounded font-medium text-sky-900">
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-right font-bold text-slate-800">${formatRM(totalItem)}</td>
+                    
+                    <!-- Dynamic Status Pelaksanaan Interactive Dropdown -->
+                    <td class="py-3 px-4 text-center">
+                        <select onchange="updateCell(${item.id}, 'status', this.value)" class="text-xs font-semibold rounded-full px-2.5 py-1.5 border focus:outline-none transition-all shadow-sm ${
+                            item.status === 'Selesai' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 focus:ring-emerald-500' :
+                            item.status === 'Tunda' ? 'bg-amber-50 text-amber-700 border-amber-200 focus:ring-amber-500' :
+                            item.status === 'Batal' ? 'bg-rose-50 text-rose-700 border-rose-200 focus:ring-rose-500' :
+                            'bg-slate-100 text-slate-700 border-slate-300 focus:ring-slate-500'
+                        }">
+                            <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
+                            <option value="Tunda" ${item.status === 'Tunda' ? 'selected' : ''}>⏳ Tunda</option>
+                            <option value="Batal" ${item.status === 'Batal' ? 'selected' : ''}>❌ Batal</option>
+                            <option value="Belum Dilaksanakan" ${item.status === 'Belum Dilaksanakan' ? 'selected' : ''}>⚪ Belum Dilaksanakan</option>
+                        </select>
+                    </td>
+
+                    <td class="py-3 px-3 text-center no-print col-actions">
+                        <div class="flex items-center justify-center gap-1">
+                            <button onclick="editCourse(${item.id})" class="p-1.5 text-blue-600 hover:bg-blue-50 hover:text-blue-700 rounded-md transition" title="Edit Kursus">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="triggerDeleteCourse(${item.id})" class="p-1.5 text-rose-600 hover:bg-rose-50 hover:text-rose-700 rounded-md transition" title="Hapus Kursus">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+
+                tr.innerHTML = rowHTML;
+                tbody.appendChild(tr);
+            });
+
+            updateFooterValues(subPax, subOs21, subOs29, subTotal);
+        }
+
+        // Update values in bottom totals bar
+        function updateFooterValues(pax, os21, os29, total) {
+            document.getElementById('grand-pax').innerText = pax;
+            document.getElementById('grand-os21').innerText = formatRM(os21);
+            document.getElementById('grand-os29').innerText = formatRM(os29);
+            document.getElementById('grand-total').innerText = formatRM(total);
+        }
+
+        // Directly update cell data from the table input edits
+        function updateCell(id, key, value) {
+            const target = courses.find(item => item.id === id);
+            if (target) {
+                if (key === 'status') {
+                    target[key] = value;
+                } else {
+                    target[key] = Math.max(0, parseFloat(value) || 0);
+                }
+                touchUpdatedDate();
+                renderTable();
+                calculateOverall();
+                showToast("Data peruntukan waran berjaya dikemaskini!", "success");
+            }
+        }
+
+        // Calculate overarching data figures
+        function calculateOverall() {
+            let totalOs21 = 0;
+            let totalOs29 = 0;
+            let totalBukanGuru = 0;
+            let totalGuru = 0;
+
+            courses.forEach(item => {
+                const itemVal21 = Number(item.os21) || 0;
+                const itemVal29 = Number(item.os29) || 0;
+                const totalItem = itemVal21 + itemVal29;
+
+                totalOs21 += itemVal21;
+                totalOs29 += itemVal29;
+
+                if (item.kategori === 'Guru') {
+                    totalGuru += totalItem;
+                } else {
+                    totalBukanGuru += totalItem;
+                }
+            });
+
+            const overallTotal = totalOs21 + totalOs29;
+            document.getElementById('total-belanja').innerText = overallTotal.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // Budget calculations based on fixed warrant ceiling budget
+            const siling = WARAN_CEILING;
+            const baki = siling - overallTotal;
+            const bakiText = document.getElementById('baki-belanja');
+            const bakiContainer = document.getElementById('baki-belanja-container');
+            const bakiIconContainer = document.getElementById('baki-icon-container');
+
+            bakiText.innerText = baki.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            if (baki >= 0) {
+                bakiContainer.className = 'text-2xl font-bold mt-1 text-emerald-600';
+                bakiIconContainer.className = 'p-3 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100';
+            } else {
+                bakiContainer.className = 'text-2xl font-bold mt-1 text-rose-600';
+                bakiIconContainer.className = 'p-3 bg-rose-50 text-rose-600 rounded-lg animate-pulse border border-rose-200';
+                // Trigger a toast warning if budget is exceeded
+                setTimeout(() => {
+                    showToast("Amaran: Perbelanjaan melebihi peruntukan waran!", "error");
+                }, 500);
+            }
+
+            // Rates progress bar
+            const rate = Math.round((overallTotal / siling) * 100);
+            document.getElementById('utilization-rate').innerText = `${rate}%`;
+            const utilizationBar = document.getElementById('utilization-bar');
+            utilizationBar.style.width = `${Math.min(100, rate)}%`;
+
+            if (rate > 100) {
+                utilizationBar.className = 'bg-rose-600 h-3 rounded-full transition-all duration-500';
+            } else if (rate > 85) {
+                utilizationBar.className = 'bg-amber-500 h-3 rounded-full transition-all duration-500';
+            } else {
+                utilizationBar.className = 'bg-indigo-600 h-3 rounded-full transition-all duration-500';
+            }
+
+            // Object-Sebagai Progress Charts
+            const totalOSCombined = totalOs21 + totalOs29 || 1;
+            const pctOs21 = Math.round((totalOs21 / totalOSCombined) * 100);
+            const pctOs29 = Math.round((totalOs29 / totalOSCombined) * 100);
+
+            document.getElementById('percent-os21').innerText = `${pctOs21}%`;
+            document.getElementById('percent-os29').innerText = `${pctOs29}%`;
+            document.getElementById('bar-os21').style.width = `${pctOs21}%`;
+            document.getElementById('bar-os29').style.width = `${pctOs29}%`;
+            document.getElementById('val-os21').innerText = formatRM(totalOs21);
+            document.getElementById('val-os29').innerText = formatRM(totalOs29);
+
+            // Group Comparison Charts
+            const totalGroupsCombined = totalBukanGuru + totalGuru || 1;
+            const pctBukanGuru = Math.round((totalBukanGuru / totalGroupsCombined) * 100);
+            const pctGuru = Math.round((totalGuru / totalGroupsCombined) * 100);
+
+            document.getElementById('percent-bukan-guru').innerText = `${pctBukanGuru}%`;
+            document.getElementById('percent-guru').innerText = `${pctGuru}%`;
+            document.getElementById('bar-bukan-guru').style.width = `${pctBukanGuru}%`;
+            document.getElementById('bar-guru').style.width = `${pctGuru}%`;
+            document.getElementById('val-bukan-guru').innerText = formatRM(totalBukanGuru);
+            document.getElementById('val-guru').innerText = formatRM(totalGuru);
+        }
+
+        // Filter functionality
+        function filterCategory(cat) {
+            currentFilter = cat;
+            
+            // Toggle active classes
+            const btns = {
+                all: document.getElementById('btn-all'),
+                'Bukan Guru': document.getElementById('btn-bukan-guru'),
+                Guru: document.getElementById('btn-guru')
+            };
+
+            Object.keys(btns).forEach(key => {
+                if (key === cat) {
+                    btns[key].className = 'px-4 py-1.5 rounded-md text-sm font-medium transition bg-slate-900 text-white';
+                } else {
+                    btns[key].className = 'px-4 py-1.5 rounded-md text-sm font-medium transition text-slate-600 hover:text-slate-900';
+                }
+            });
+
+            renderTable();
+        }
+
+        // Search text input triggers
+        function handleSearch() {
+            currentSearch = document.getElementById('search-input').value;
+            renderTable();
+        }
+
+        // Modal Controls
+        function openAddModal() {
+            document.getElementById('modal-title').innerText = 'Tambah Maklumat Kursus';
+            document.getElementById('course-form').reset();
+            document.getElementById('form-course-id').value = '';
+            document.getElementById('course-modal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('course-modal').classList.add('hidden');
+        }
+
+        // Process Add/Edit form inputs
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('form-course-id').value;
+            const data = {
+                kategori: document.getElementById('form-kategori').value,
+                nama: document.getElementById('form-nama').value,
+                objektif: document.getElementById('form-objektif').value,
+                outcome: document.getElementById('form-outcome').value,
+                pax: parseInt(document.getElementById('form-pax').value) || 0,
+                tarikh: document.getElementById('form-tarikh').value,
+                lokasi: document.getElementById('form-lokasi').value,
+                os21: parseFloat(document.getElementById('form-os21').value) || 0,
+                os29: parseFloat(document.getElementById('form-os29').value) || 0,
+                status: document.getElementById('form-status').value,
+            };
+
+            if (editId) {
+                // Edit existing record
+                const idx = courses.findIndex(item => item.id === parseInt(editId));
+                if (idx !== -1) {
+                    courses[idx] = { ...courses[idx], ...data };
+                }
+                showToast("Rekod kursus berjaya dikemaskini!", "success");
+            } else {
+                // Add new record
+                const newId = courses.length > 0 ? Math.max(...courses.map(c => c.id)) + 1 : 1;
+                courses.push({ id: newId, ...data });
+                showToast("Rekod kursus baru berjaya ditambah!", "success");
+            }
+
+            touchUpdatedDate();
+            closeAddModal();
+            renderTable();
+            calculateOverall();
+        }
+
+        // Trigger editing fill
+        function editCourse(id) {
+            const item = courses.find(c => c.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-title').innerText = 'Sunting Maklumat Kursus';
+            document.getElementById('form-course-id').value = item.id;
+            document.getElementById('form-kategori').value = item.kategori;
+            document.getElementById('form-nama').value = item.nama;
+            document.getElementById('form-objektif').value = item.objektif;
+            document.getElementById('form-outcome').value = item.outcome;
+            document.getElementById('form-pax').value = item.pax;
+            document.getElementById('form-tarikh').value = item.tarikh;
+            document.getElementById('form-lokasi').value = item.lokasi;
+            document.getElementById('form-os21').value = item.os21;
+            document.getElementById('form-os29').value = item.os29;
+            document.getElementById('form-status').value = item.status;
+
+            document.getElementById('course-modal').classList.remove('hidden');
+        }
+
+        // Delete modal handling
+        function triggerDeleteCourse(id) {
+            document.getElementById('delete-target-id').value = id;
+            document.getElementById('delete-modal').classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('delete-modal').classList.add('hidden');
+        }
+
+        function confirmDelete() {
+            const id = parseInt(document.getElementById('delete-target-id').value);
+            courses = courses.filter(item => item.id !== id);
+            closeDeleteModal();
+            touchUpdatedDate();
+            renderTable();
+            calculateOverall();
+            showToast("Rekod kursus berjaya dipadamkan.", "info");
+        }
+
+        // Export data structure to CSV
+        function exportData() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Bil,Kategori,Nama Kursus,Objektif,Outcome,Pax,Tarikh,Lokasi,OS21 (Sewa),OS29 (Latihan/Tuntutan),Jumlah (RM),Status\n";
+
+            courses.forEach((item, index) => {
+                const totalItem = item.os21 + item.os29;
+                const row = [
+                    index + 1,
+                    `"${item.kategori}"`,
+                    `"${item.nama}"`,
+                    `"${item.objektif.replace(/"/g, '""')}"`,
+                    `"${item.outcome.replace(/"/g, '""')}"`,
+                    item.pax,
+                    `"${item.tarikh}"`,
+                    `"${item.lokasi}"`,
+                    item.os21.toFixed(2),
+                    item.os29.toFixed(2),
+                    totalItem.toFixed(2),
+                    `"${item.status}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Laporan_Perbelanjaan_Waran_JPA_2026.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Laporan CSV berjaya dimuat turun!", "success");
+        }
+
+        // On Load Initializers
+        window.onload = function() {
+            renderTable();
+            calculateOverall();
+            touchUpdatedDate(); // Live load time
+        };
+    </script>
+</body>
+</html>

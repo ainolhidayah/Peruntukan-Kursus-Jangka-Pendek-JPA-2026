@@ -134,10 +134,12 @@
         <div class="max-w-[98rem] mx-auto px-4 py-5 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <!-- RUANGAN LOGO: IAB GitHub Logo Placeholder -->
-                    <!-- Sila gantikan struktur div di bawah dengan tag <img src="logo-iab.png" alt="Logo IAB" class="h-12 w-auto object-contain"> di GitHub -->
-                    <div class="p-2.5 bg-white/10 rounded-lg backdrop-blur-sm border border-white/10 flex items-center justify-center">
-                        <i class="fa-solid fa-file-invoice-dollar text-2xl text-amber-400 animate-pulse"></i>
+                    <!-- LOGO RASMI INSTITUT AMINUDDIN BAKI (Sokongan Fail Imej Nyata & Fallback) -->
+                    <div class="flex items-center shrink-0">
+                        <img src="LOGO-KPM_UNIT_WHITE--26-IAB.png" alt="Logo IAB" class="h-12 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('fallback-logo').classList.remove('hidden');">
+                        <div id="fallback-logo" class="hidden p-2.5 bg-white/10 rounded-lg backdrop-blur-sm border border-white/10 flex items-center justify-center">
+                            <i class="fa-solid fa-file-invoice-dollar text-2xl text-amber-400 animate-pulse"></i>
+                        </div>
                     </div>
                     <div>
                         <p class="text-[10px] font-semibold tracking-widest text-indigo-200 uppercase">Kementerian Pendidikan • Institut Aminuddin Baki</p>
